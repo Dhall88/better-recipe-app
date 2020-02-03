@@ -4,10 +4,45 @@ import './App.css';
 import Timer from './components/Timer.js'
 
 class App extends Component {
+  state={
+    seconds: 0,
+    minutes: 0,
+    hours: 0,
+    timerArr:[]
+  }
+  handleChange = (event) => {
+    this.setState({ [event.target.id]: event.target.value })
+  }
+  handleSubmit =(event) => {
+    event.preventDefault()
+    let arrItem = [this.state.seconds,this.state.minutes,this.state.hours]
+    this.setState({
+      seconds:0,
+      minutes:0,
+      hours:0,
+      timerArr:[...this.state.timerArr,arrItem]
+    })
+  }
+  
   render () {
   return (
     <div>
-    <Timer seconds={1} minutes={1} hours={0} />
+      <form onSubmit={this.handleSubmit}>
+        <label for='seconds'>seconds</label>
+        <input type='number' value={this.state.seconds} onChange={this.handleChange} id='seconds' />
+        <br />
+        <label for='minutes'>minutes</label>
+        <input type='number' value={this.state.minutes} onChange={this.handleChange} id='minutes' />
+        <br />
+        <label for='hours'>hours</label>
+        <input type='number' value={this.state.hours} onChange={this.handleChange} id='hours' />
+        <br />
+        <input type='submit' />
+      </form>
+      <button onClick={this.createTimer}>Create Timer</button>
+    {this.state.timerArr.map((timer)=> {
+      return <Timer seconds={timer[0]} minutes={timer[1]} hours={timer[2]}/>
+    })}
     </div>
   )
   }
