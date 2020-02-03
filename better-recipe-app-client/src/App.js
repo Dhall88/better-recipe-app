@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
 
-import Timer from './components/Timer.js'
+import Timer from './components/Timer.js';
+import Ingredients from './components/Ingredients.js';
 
 class App extends Component {
   state={
@@ -29,7 +30,8 @@ class App extends Component {
   render () {
   return (
     <div>
-      <form onSubmit={this.handleSubmit}>
+      <Ingredients />
+      <form className='timer-form' onSubmit={this.handleSubmit}>
         <label for='label'>label</label>
         <input type='text' value={this.state.label} onChange={this.handleChange} id='label' />
         <br />
@@ -45,9 +47,11 @@ class App extends Component {
         <input type='submit' />
       </form>
       <button onClick={this.createTimer}>Create Timer</button>
-    {this.state.timerArr.map((timer)=> {
-      return <Timer label={timer[3]} seconds={timer[0]} minutes={timer[1]} hours={timer[2]}/>
-    })}
+      <div className='timer-container'>
+        {this.state.timerArr.map((timer)=> {
+          return <Timer label={timer[3]} seconds={timer[0]} minutes={timer[1]} hours={timer[2]}/>
+        })}
+      </div>
     </div>
   )
   }
