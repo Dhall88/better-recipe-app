@@ -5,6 +5,7 @@ import Timer from './components/Timer.js'
 
 class App extends Component {
   state={
+    label: '',
     seconds: 0,
     minutes: 0,
     hours: 0,
@@ -15,8 +16,9 @@ class App extends Component {
   }
   handleSubmit =(event) => {
     event.preventDefault()
-    let arrItem = [this.state.seconds,this.state.minutes,this.state.hours]
+    let arrItem = [this.state.seconds,this.state.minutes,this.state.hours,this.state.label]
     this.setState({
+      label:'',
       seconds:0,
       minutes:0,
       hours:0,
@@ -28,6 +30,9 @@ class App extends Component {
   return (
     <div>
       <form onSubmit={this.handleSubmit}>
+        <label for='label'>label</label>
+        <input type='text' value={this.state.label} onChange={this.handleChange} id='label' />
+        <br />
         <label for='seconds'>seconds</label>
         <input type='number' value={this.state.seconds} onChange={this.handleChange} id='seconds' />
         <br />
@@ -41,7 +46,7 @@ class App extends Component {
       </form>
       <button onClick={this.createTimer}>Create Timer</button>
     {this.state.timerArr.map((timer)=> {
-      return <Timer seconds={timer[0]} minutes={timer[1]} hours={timer[2]}/>
+      return <Timer label={timer[3]} seconds={timer[0]} minutes={timer[1]} hours={timer[2]}/>
     })}
     </div>
   )

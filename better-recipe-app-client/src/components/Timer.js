@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 export default class Timer extends Component {
     state={
+        label:this.props.label,
         seconds: this.props.seconds,
         minutes: this.props.minutes,
         hours: this.props.hours,
@@ -60,6 +61,7 @@ export default class Timer extends Component {
     render () {
         return (
             <div>
+                <h2>{this.state.label}</h2>
                 <h2>{this.state.hours}</h2>
                 <h2>{this.state.minutes}</h2>
                 <h2>{this.state.seconds}</h2>
