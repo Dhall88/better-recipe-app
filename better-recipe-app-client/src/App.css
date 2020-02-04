@@ -1,7 +1,17 @@
-.ingredient-container {
-  position: fixed;
-  top: 200px;
+.container {
+  display: flex;
+}
+.ingredient-placeholder {
+  display: block;
+  min-width: 200px;
+  height:vh;
   background-color: lavender;
+}
+
+.ingredients {
+  position: fixed;
+  top: 20px;
+  right: 20px;
 }
 
 .timer-form {
