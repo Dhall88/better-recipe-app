@@ -5,3 +5,17 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+
+# Recipe.create({
+#   name: 'test1',
+#   instructions: ['1,2,3'],
+#   ingredients: ['sugar','spice','everything nice']
+#   })
+Recipe.create({
+  name: 'test1',
+  instructions: ['1,2,3'],
+  ingredients: [{'first':'sugar'},{'second':'spice'},{'third':'everything nice'}]
+  })
+
+p 'seeded database'

@@ -1,13 +1,9 @@
+body {
+  background-color: #FAF1C4;
+}
+
 .container {
   display: flex;
-  width: 100%;
-}
-
-.main {
-  width:100%;
-}
-
-.root {
   width: 100%;
 }
 
@@ -18,13 +14,31 @@
 }
 
 h1 {
-  text-align: center;
+   color: #7c795d;
+   font-family: 'Trocchi', serif;
+   font-size: 45px;
+   font-weight: normal;
+   line-height: 48px;
+   margin: 0;
+}
+
+h3 {
+  color: #7c795d;
+  font-family: 'Trocchi', serif;
+  font-size: 20px;
+  font-weight: normal;
+  line-height: 20px;
+  margin: 0;
 }
 .ingredient-placeholder {
   display: block;
   min-width: 33%;
-  height:2000px;
-  background-color: lavender;
+  height: vh;
+  min-height:900px;
+  background-color: #FBEFB5;
+  margin: 2em;
+  border-radius: 5px;
+  box-shadow: 5px 5px 15px grey;
 }
 
 .ingredients {
@@ -40,4 +54,11 @@ h1 {
 
 .recipe-container {
   width: 33%;
+}
+
+.saved-recipes, .timer-container {
+  background-color: #FBEFB5;
+  margin: 2em;
+  border-radius: 5px;
+  box-shadow: 5px 5px 15px grey;
 }

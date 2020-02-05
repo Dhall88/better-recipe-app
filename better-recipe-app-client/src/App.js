@@ -17,19 +17,19 @@ class App extends Component {
     searchString:'',
     searchResults:[],
     displaySearch:false,
-    activeRecipe: [],
+    activeRecipe: ['ddddddddddd dkkkkkkkkkkkkkkkkkkkk saaaaaaaaaaaaaaaaaaaa k           kkkkkkkkkkkkkkkkkk'],
     activeRecipeName: '',
     displayActive: false,
     ingredients:[],
     savedRecipes:[]
   }
 
-  componentDidMount() {
+  componentDidMount = () => {
     this.getRecipes();
   }
 
   getRecipes = () => {
-    fetch('htt://localhost:3000/recipes')
+    fetch('http://localhost:3000/recipes')
     .then(response => response.json())
     .then(json => this.setState({savedRecipes: json}))
     .catch(error => console.error(error))
@@ -53,6 +53,7 @@ class App extends Component {
 
   activeRecipe = (event) => {
     event.preventDefault();
+    let index=event.target.value;
     fetch(`https://api.spoonacular.com/recipes/${event.target.id}/analyzedInstructions?apiKey=${apiKey}`)
     .then((response) => response.json())
       .then((recipeInstructions) => {
@@ -60,14 +61,13 @@ class App extends Component {
           activeRecipe: recipeInstructions[0].steps,
           displayActive: true,
           displaySearch: false,
-          activeRecipeName: searchResults[event.target.index].title
+          activeRecipeName: this.state.searchResults[index].title
         })
       })
 
       fetch(`https://api.spoonacular.com/recipes/${event.target.id}/ingredientWidget.json?apiKey=${apiKey}`)
       .then((response) => response.json())
         .then((recipeIngredients) => {
-          console.log(recipeIngredients.ingredients)
           this.setState({
             ingredients: recipeIngredients.ingredients
           })
@@ -87,7 +87,7 @@ class App extends Component {
   }
 
   saveRecipe = (event) => {
-    event.default()
+    event.preventDefault()
     fetch('http://localhost:3000/recipes', {
       body: JSON.stringify({name: this.state.activeRecipeName, instructions: this.state.activeRecipe, ingredients: this.state.ingredients}),
       method: 'POST',
@@ -97,14 +97,15 @@ class App extends Component {
       }
     })
     .then(createdRecipe => {
-      returncreateRotice.json()
+      return createdRecipe.json()
     })
     .then(jsonedRecipe => {
+      console.log(jsonedRecipe)
       this.setState({
         savedRecipes: [...this.state.savedRecipes, jsonedRecipe]
       })
     })
-    .catch(error => console.log(error);)
+    .catch(error => console.log(error))
   }
 
   render () {
@@ -113,14 +114,16 @@ class App extends Component {
       <h1>Better Recipes</h1>
       <div className='container'>
         <div className='saved-timer'>
-          <h3>Saved Recipes</h3>
 
-          <div>
+          <div className='saved-recipes'>
+            <h3>Saved Recipes</h3>
           {this.state.savedRecipes.map(recipe => {
             return <li>{recipe.name}</li>
           })}
+          </div>
 
         <div className='timer-container'>
+          <h3>Timers</h3>
           <form className='timer-form' onSubmit={this.timerSubmit}>
             <label htmlFor ='label'>label</label>
             <input type='text' value={this.state.label} onChange={this.handleChange} id='label' />
@@ -156,44 +159,51 @@ class App extends Component {
           <div>
           {this.state.displaySearch===true?
             (this.state.searchResults.map((recipe,index)=>{
-              return <li index={index} id={recipe.id} recipe={recipe} onClick={this.activeRecipe}>{recipe.title}</li>
+              return <li value={5} id={recipe.id} onClick={this.activeRecipe}>{recipe.title}</li>
             })):''
           }
           </div>
+          {this.state.displayActive===true?
 
+          // <button onClick={this.saveRecipe}>Save Recipe</button>
+          (<form className='save-form' onSubmit={this.saveRecipe}>
+          <input type='hidden' value={this.state.activeRecipeName} onChange={this.handleChange} id='name' />
+          <input type='hidden' value={this.state.activeRecipe} onChange={this.handleChange} id='instructions' />
+          <input type='hidden' value={this.state.ingredients} onChange={this.handleChange} id='ingredients' />
+          <input type='submit' value='Save Recipe'/>
+          </form>)
+
+          :''}
           <div className='instructions'>
             {this.state.displayActive===true?
               (
-            <form className='save-form' onSubmit={this.saveRecipe}>
-                <input type='hidden' value={this.state.activeRecipeName} onChange={this.handleChange} id='name' />
-                <input type='hidden' value={this.state.activeRecipe} onChange={this.handleChange} id='instructions' />
-                <input type='hidden' value={this.state.ingredients} onChange={this.handleChange} id='ingredients' />
-                <input type='submit' />
-            </form>
 
-              this.state.activeRecipe.map((steps) => {
+
+              (this.state.activeRecipe.map((steps) => {
               return <li>{steps.step}</li>
-            })):''
+            }))) :''
           }
           </div>
-
+          </div>
+          <div className='ingredient-placeholder'>
+          <h3>Ingredients</h3>
             {this.state.displayActive===true?
             (
               <div className='ingredients'>
                 <div>
-                <div>
-                {(this.state.ingredients.map((ingredient) => {
-                  return <li>{ingredient.amount.us.value}</li>
-                }))}
-                </div>
-                <div>
-                {(this.state.ingredients.map((ingredient) => {
-                  return <li>{ingredient.amount.us.unit}</li>
-                }))}
-                {(this.state.ingredients.map((ingredient) => {
-                  return <li>{ingredient.name}</li>
-                }))}
-                </div>
+                  <div>
+                  {(this.state.ingredients.map((ingredient) => {
+                    return <li>{ingredient.amount.us.value}</li>
+                  }))}
+                  </div>
+                  <div>
+                  {(this.state.ingredients.map((ingredient) => {
+                    return <li>{ingredient.amount.us.unit}</li>
+                  }))}
+                  {(this.state.ingredients.map((ingredient) => {
+                    return <li>{ingredient.name}</li>
+                  }))}
+                  </div>
                 </div>
               </div>
           )
@@ -201,7 +211,7 @@ class App extends Component {
           }
         </div>
 
-        <div className='ingredient-placeholder'></div>
+
       </div>
 
     </div>
