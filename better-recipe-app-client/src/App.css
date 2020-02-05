@@ -10,40 +10,48 @@ body {
 .saved-timer {
   display:flex;
   flex-direction: column;
-  width: 33%;
+  width: 25%;
 }
 
 h1 {
+   text-align: center;
    color: #7c795d;
    font-family: 'Trocchi', serif;
-   font-size: 45px;
+   font-size: 55px;
    font-weight: normal;
    line-height: 48px;
-   margin: 0;
+   margin: 5px;
 }
+
 
 h3 {
   color: #7c795d;
   font-family: 'Trocchi', serif;
-  font-size: 20px;
+  font-size: 35px;
   font-weight: normal;
   line-height: 20px;
-  margin: 0;
+  padding: 1em;
 }
 .ingredient-placeholder {
   display: block;
-  min-width: 33%;
+  min-width: 25%;
   height: vh;
   min-height:900px;
   background-color: #FBEFB5;
-  margin: 2em;
+  margin: 1em;
   border-radius: 5px;
   box-shadow: 5px 5px 15px grey;
 }
 
+ul li {
+  list-style-type: none;
+  padding: 1em;
+  font-size: 18px
+}
+
 .ingredients {
   display: flex;
-  position: fixed;
+  /* position: fixed; */
   top: 20px;
   right: 20px;
 }
@@ -53,12 +61,12 @@ h3 {
 }
 
 .recipe-container {
-  width: 33%;
+  width: 50%;
 }
 
 .saved-recipes, .timer-container {
   background-color: #FBEFB5;
-  margin: 2em;
+  margin: 1em;
   border-radius: 5px;
   box-shadow: 5px 5px 15px grey;
 }

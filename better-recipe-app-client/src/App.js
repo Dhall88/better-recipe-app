@@ -5,7 +5,7 @@ import Timer from './components/Timer.js';
 import Ingredients from './components/Ingredients.js';
 import Saved from './components/Saved.js';
 
-const apiKey='ffcad7d6d56f4eb39e6c0f742e23016e'
+const apiKey='ffcad7d6d56f4eb39e6c0f742e23016e';
 
 class App extends Component {
   state={
@@ -53,7 +53,7 @@ class App extends Component {
 
   activeRecipe = (event) => {
     event.preventDefault();
-    let index=event.target.value;
+    let name=event.target.innerHTML;
     fetch(`https://api.spoonacular.com/recipes/${event.target.id}/analyzedInstructions?apiKey=${apiKey}`)
     .then((response) => response.json())
       .then((recipeInstructions) => {
@@ -61,7 +61,7 @@ class App extends Component {
           activeRecipe: recipeInstructions[0].steps,
           displayActive: true,
           displaySearch: false,
-          activeRecipeName: this.state.searchResults[index].title
+          activeRecipeName: name
         })
       })
 
@@ -108,114 +108,133 @@ class App extends Component {
     .catch(error => console.log(error))
   }
 
-  render () {
-    return (
-    <div className='main'>
-      <h1>Better Recipes</h1>
-      <div className='container'>
-        <div className='saved-timer'>
+  render() {
+    return(
+      <div classNAme='main'>
 
-          <div className='saved-recipes'>
-            <h3>Saved Recipes</h3>
-          {this.state.savedRecipes.map(recipe => {
-            return <li>{recipe.name}</li>
-          })}
-          </div>
+        <h1>Better Recipes</h1>
 
-        <div className='timer-container'>
-          <h3>Timers</h3>
-          <form className='timer-form' onSubmit={this.timerSubmit}>
-            <label htmlFor ='label'>label</label>
-            <input type='text' value={this.state.label} onChange={this.handleChange} id='label' />
-            <br />
-            <label htmlFor='seconds'>seconds</label>
-            <input type='number' value={this.state.seconds} onChange={this.handleChange} id='seconds' />
-            <br />
-            <label htmlFor='minutes'>minutes</label>
-            <input type='number' value={this.state.minutes} onChange={this.handleChange} id='minutes' />
-            <br />
-            <label htmlFor='hours'>hours</label>
-            <input type='number' value={this.state.hours} onChange={this.handleChange} id='hours' />
-            <br />
-            <input type='submit' />
-          </form>
+          <div className='container'>
 
-            <div className='timer-list'>
-              {this.state.timerArr.map((timer)=> {
-                return <Timer label={timer[3]} seconds={timer[0]} minutes={timer[1]} hours={timer[2]}/>
+            <div className='saved-timer'>
+
+              <div className='saved-recipes'>
+                <h3>Saved Recipes</h3>
+                <ul>
+              {this.state.savedRecipes.map(recipe => {
+                return <li>{recipe.name}</li>
               })}
+                </ul>
+              </div>
+
+              <div className='timer-container'>
+                <h3>Timers</h3>
+                <form className='timer-form'>
+                  <label htmlFor ='label'>label</label>
+                  <input type='text' value={this.state.label} onChange={this.handleChange} id='label' />
+                  <br />
+                  <label htmlFor='seconds'>seconds</label>
+                  <input type='number' value={this.state.seconds} onChange={this.handleChange} id='seconds' />
+                  <br />
+                  <label htmlFor='minutes'>minutes</label>
+                  <input type='number' value={this.state.minutes} onChange={this.handleChange} id='minutes' />
+                  <br />
+                  <label htmlFor='hours'>hours</label>
+                  <input type='number' value={this.state.hours} onChange={this.handleChange} id='hours' />
+                  <br />
+                  <input type='submit' value='Create Timer' onClick={this.timerSubmit} />
+                </form>
+
+                {this.state.displayActive===true?
+                  <div>
+                  {this.state.timerArr.map((timer)=> {
+                        return <Timer label={timer[3]} seconds={timer[0]} minutes={timer[1]} hours={timer[2]}/>
+                      }
+                    )}
+                  </div>
+                  :
+                  ''}
+              </div>
             </div>
 
-          </div>
-        </div>
+              <div classNAme='recipe-container'>
+                <form className='recipe-form' onSubmit={this.recipeSearch}>
+                  <label htmlFor='searchString'>Search Recipes</label>
+                  <input type='text' value={this.state.searchString} onChange={this.handleChange} id='searchString' />
+                  <input type='submit' />
+                </form>
 
-        <div className='recipe-container'>
-          <form className='recipe-form' onSubmit={this.recipeSearch}>
-            <label htmlFor='searchString'>Search Recipes</label>
-            <input type='text' value={this.state.searchString} onChange={this.handleChange} id='searchString' />
-            <input type='submit' />
-          </form>
+                <React.Fragment>
+                  <ul>
+                  {this.state.displaySearch===true?
+                    (this.state.searchResults.map((recipe,index)=>{
+                      return <li id={recipe.id} onClick={this.activeRecipe}>{recipe.title}</li>
+                    })):''
+                  }
+                  </ul>
+                </React.Fragment>
 
-          <div>
-          {this.state.displaySearch===true?
-            (this.state.searchResults.map((recipe,index)=>{
-              return <li value={5} id={recipe.id} onClick={this.activeRecipe}>{recipe.title}</li>
-            })):''
-          }
-          </div>
-          {this.state.displayActive===true?
+                <React.Fragment>
+                {this.state.displayActive===true?
+                  <React.Fragment>
+                    <form className='save-form' onSubmit={this.saveRecipe}>
+                      <input type='hidden' value={this.state.activeRecipeName} onChange={this.handleChange} id='name' />
+                      <input type='hidden' value={this.state.activeRecipe} onChange={this.handleChange} id='instructions' />
+                      <input type='hidden' value={this.state.ingredients} onChange={this.handleChange} id='ingredients' />
+                      <input type='submit' value='Save Recipe'/>
+                    </form>
+                  </React.Fragment>
 
-          // <button onClick={this.saveRecipe}>Save Recipe</button>
-          (<form className='save-form' onSubmit={this.saveRecipe}>
-          <input type='hidden' value={this.state.activeRecipeName} onChange={this.handleChange} id='name' />
-          <input type='hidden' value={this.state.activeRecipe} onChange={this.handleChange} id='instructions' />
-          <input type='hidden' value={this.state.ingredients} onChange={this.handleChange} id='ingredients' />
-          <input type='submit' value='Save Recipe'/>
-          </form>)
+                :''}
+                </React.Fragment>
 
-          :''}
-          <div className='instructions'>
-            {this.state.displayActive===true?
-              (
-
-
-              (this.state.activeRecipe.map((steps) => {
-              return <li>{steps.step}</li>
-            }))) :''
-          }
-          </div>
-          </div>
-          <div className='ingredient-placeholder'>
-          <h3>Ingredients</h3>
-            {this.state.displayActive===true?
-            (
-              <div className='ingredients'>
-                <div>
-                  <div>
-                  {(this.state.ingredients.map((ingredient) => {
-                    return <li>{ingredient.amount.us.value}</li>
-                  }))}
-                  </div>
-                  <div>
-                  {(this.state.ingredients.map((ingredient) => {
-                    return <li>{ingredient.amount.us.unit}</li>
-                  }))}
-                  {(this.state.ingredients.map((ingredient) => {
-                    return <li>{ingredient.name}</li>
-                  }))}
-                  </div>
+                <React.Fragment>
+                    {this.state.displayActive===true?
+                      <ul className='instructions'>
+                        {this.state.activeRecipe.map((steps) => {
+                      return <li>{steps.step}</li>
+                    })} </ul> :''
+                    }
+                </React.Fragment>
                 </div>
-              </div>
-          )
-            : ''
-          }
-        </div>
 
+                <React.Fragment>
+                {this.state.displayActive===true?
+
+                  <div className='ingredient-placeholder'>
+                    <h3>Ingredients</h3>
+                    <div className='ingredients'>
+                      <ul>
+                      {(this.state.ingredients.map((ingredient) => {
+                        return <li>{ingredient.amount.us.value}</li>
+                      }))}
+                      </ul>
+                      <ul>
+                      {(this.state.ingredients.map((ingredient) => {
+                        return <li>{ingredient.amount.us.unit}</li>
+                      }))}
+                      </ul>
+                      <ul>
+                      {(this.state.ingredients.map((ingredient) => {
+                        return <li>{ingredient.name}</li>
+                      }))}
+                      </ul>
+                    </div>
+                  </div>
+                  :''
+                }
+
+                </React.Fragment>
+
+
+
+
+
+
+        </div>
 
       </div>
-
-    </div>
-  )
+    )
   }
 }
 
