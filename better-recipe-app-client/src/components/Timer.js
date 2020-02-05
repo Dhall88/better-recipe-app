@@ -40,9 +40,9 @@ export default class Timer extends Component {
             if (this.state.seconds===0) {
                 this.setState({
                     seconds:59,
-                    minutes: (this.state.minutes===0&&this.state.hours!==0)?
-                    59:(this.state.minutes===0?0:this.state.minutes-1),
-                    hours:this.state.hours===0?0:this.state.hours-1
+                    minutes: (this.state.minutes===0&&this.state.hours>0)?
+                    59:(this.state.minutes===0 ? 0 : (this.state.minutes-1)),
+                    hours:(this.state.hours>0 && this.state.minutes===0)?this.state.hours-1:this.state.hours
                 })
             } else {
                 this.setState({
@@ -55,7 +55,7 @@ export default class Timer extends Component {
         }
             this.countDown()
         }, 1000)
-        
+
     }
 
     render () {

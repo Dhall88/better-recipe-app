@@ -1,14 +1,33 @@
 .container {
   display: flex;
+  width: 100%;
+}
+
+.main {
+  width:100%;
+}
+
+.root {
+  width: 100%;
+}
+
+.saved-timer {
+  display:flex;
+  flex-direction: column;
+}
+
+h1 {
+  text-align: center;
 }
 .ingredient-placeholder {
   display: block;
-  min-width: 200px;
-  height:vh;
+  min-width: 400px;
+  height:2000px;
   background-color: lavender;
 }
 
 .ingredients {
+  display: flex;
   position: fixed;
   top: 20px;
   right: 20px;

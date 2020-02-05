@@ -1,4 +1,4 @@
-import React, {Component} from 'react' 
+import React, {Component} from 'react'
 
 let temp = ['rice and beans', 'nails and milk', 'Steak Au Poire']
 
@@ -7,7 +7,7 @@ export default class Saved extends Component {
         return (
             <div className='saved'>
                 {temp.map((recipe) => {
-                    return <ul>recipe</ul>
+                    return <ul>{recipe}</ul>
                 })}
             </div>
         )
