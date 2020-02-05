@@ -18,6 +18,7 @@ class App extends Component {
     searchResults:[],
     displaySearch:false,
     activeRecipe: [],
+    activeRecipeName: '',
     displayActive: false,
     ingredients:[]
   }
@@ -46,7 +47,8 @@ class App extends Component {
         this.setState({
           activeRecipe: recipeInstructions[0].steps,
           displayActive: true,
-          displaySearch: false
+          displaySearch: false,
+          activeRecipeName: searchResults[event.target.index].title
         })
       })
 
@@ -117,15 +119,19 @@ class App extends Component {
 
           <div>
           {this.state.displaySearch===true?
-            (this.state.searchResults.map(recipe=>{
-              return <li id={recipe.id} recipe={recipe} onClick={this.activeRecipe}>{recipe.title}</li>
+            (this.state.searchResults.map((recipe,index)=>{
+              return <li index={index} id={recipe.id} recipe={recipe} onClick={this.activeRecipe}>{recipe.title}</li>
             })):''
           }
           </div>
 
           <div className='instructions'>
             {this.state.displayActive===true?
-              (this.state.activeRecipe.map((steps) => {
+              (
+            <form className='save-form' onSubmit={this.saveRecipe}>
+                <input type='hidden' value={this.state.activeRecipeName} onChange={this.handleChange} id='name' />
+            
+              this.state.activeRecipe.map((steps) => {
               return <li>{steps.step}</li>
             })):''
           }
