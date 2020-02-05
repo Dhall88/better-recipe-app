@@ -20,7 +20,19 @@ class App extends Component {
     activeRecipe: [],
     activeRecipeName: '',
     displayActive: false,
-    ingredients:[]
+    ingredients:[],
+    savedRecipes:[]
+  }
+
+  componentDidMount() {
+    this.getRecipes();
+  }
+
+  getRecipes = () => {
+    fetch('htt://localhost:3000/recipes')
+    .then(response => response.json())
+    .then(json => this.setState({savedRecipes: json}))
+    .catch(error => console.error(error))
   }
 
   recipeSearch=(event)=>{
@@ -74,6 +86,27 @@ class App extends Component {
     })
   }
 
+  saveRecipe = (event) => {
+    event.default()
+    fetch('http://localhost:3000/recipes', {
+      body: JSON.stringify({name: this.state.activeRecipeName, instructions: this.state.activeRecipe, ingredients: this.state.ingredients}),
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(createdRecipe => {
+      returncreateRotice.json()
+    })
+    .then(jsonedRecipe => {
+      this.setState({
+        savedRecipes: [...this.state.savedRecipes, jsonedRecipe]
+      })
+    })
+    .catch(error => console.log(error);)
+  }
+
   render () {
     return (
     <div className='main'>
@@ -82,7 +115,10 @@ class App extends Component {
         <div className='saved-timer'>
           <h3>Saved Recipes</h3>
 
-          <Saved />
+          <div>
+          {this.state.savedRecipes.map(recipe => {
+            return <li>{recipe.name}</li>
+          })}
 
         <div className='timer-container'>
           <form className='timer-form' onSubmit={this.timerSubmit}>
@@ -130,7 +166,11 @@ class App extends Component {
               (
             <form className='save-form' onSubmit={this.saveRecipe}>
                 <input type='hidden' value={this.state.activeRecipeName} onChange={this.handleChange} id='name' />
-            
+                <input type='hidden' value={this.state.activeRecipe} onChange={this.handleChange} id='instructions' />
+                <input type='hidden' value={this.state.ingredients} onChange={this.handleChange} id='ingredients' />
+                <input type='submit' />
+            </form>
+
               this.state.activeRecipe.map((steps) => {
               return <li>{steps.step}</li>
             })):''
