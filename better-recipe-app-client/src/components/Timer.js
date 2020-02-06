@@ -60,11 +60,9 @@ export default class Timer extends Component {
 
     render () {
         return (
-            <div>
-                <h2>{this.state.label}</h2>
-                <h2>{this.state.hours}</h2>
-                <h2>{this.state.minutes}</h2>
-                <h2>{this.state.seconds}</h2>
+            <div className='timer'>
+                <h4>{this.state.label}</h4>
+                <h5>{`${this.state.hours}:${this.state.minutes<10?0:''}${this.state.minutes}:${this.state.seconds<10?0:''}${this.state.seconds}`}</h5>
                 <button onClick={this.startStop} className='action'>
                     {this.state.startBoolean===true?'Stop':'Start'}
                 </button>

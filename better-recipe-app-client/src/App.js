@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import './App.css';
 
 import Timer from './components/Timer.js';
-import Ingredients from './components/Ingredients.js';
-import Saved from './components/Saved.js';
 
 const apiKey='ffcad7d6d56f4eb39e6c0f742e23016e';
 
@@ -89,6 +87,7 @@ class App extends Component {
 
   saveRecipe = (event) => {
     event.preventDefault()
+    console.log(typeof this.state.activeRecipeName)
     fetch('http://localhost:3000/recipes', {
       body: JSON.stringify({name: this.state.activeRecipeName, instructions: this.state.activeRecipe, ingredients: this.state.ingredients}),
       method: 'POST',
@@ -131,38 +130,38 @@ class App extends Component {
               <div className='timer-container'>
                 <h3>Timers</h3>
                 <form className='timer-form'>
-                  <label htmlFor ='label'>label</label>
-                  <input type='text' value={this.state.label} onChange={this.handleChange} id='label' />
+                  <label htmlFor ='label'>label:</label>
+                  <input className="label" type='text' value={this.state.label} onChange={this.handleChange} id='label' />
                   <br />
-                  <label htmlFor='seconds'>seconds</label>
+                  <div className="time-units">
+                  <label htmlFor='seconds'>seconds:</label>
                   <input type='number' value={this.state.seconds} onChange={this.handleChange} id='seconds' />
                   <br />
-                  <label htmlFor='minutes'>minutes</label>
+                  <label htmlFor='minutes'>minutes:</label>
                   <input type='number' value={this.state.minutes} onChange={this.handleChange} id='minutes' />
                   <br />
-                  <label htmlFor='hours'>hours</label>
+                  <label htmlFor='hours'>hours:</label>
                   <input type='number' value={this.state.hours} onChange={this.handleChange} id='hours' />
+                  </div>
                   <br />
                   <input type='submit' value='Create Timer' onClick={this.timerSubmit} />
                 </form>
 
-                {this.state.displayActive===true?
-                  <div>
+                  <div className='center-timers'>
                   {this.state.timerArr.map((timer)=> {
                         return <Timer label={timer[3]} seconds={timer[0]} minutes={timer[1]} hours={timer[2]}/>
                       }
                     )}
                   </div>
-                  :
-                  ''}
+
               </div>
             </div>
 
-              <div classNAme='recipe-container'>
+              <div className='recipe-container'>
                 <form className='recipe-form' onSubmit={this.recipeSearch}>
-                  <label htmlFor='searchString'>Search Recipes</label>
+                  <label htmlFor='searchString'>Search Recipes:</label>
                   <input type='text' value={this.state.searchString} onChange={this.handleChange} id='searchString' />
-                  <input type='submit' />
+                  <input type='submit' value='Search'/>
                 </form>
 
                 <React.Fragment>
@@ -207,17 +206,7 @@ class App extends Component {
                     <div className='ingredients'>
                       <ul>
                       {(this.state.ingredients.map((ingredient) => {
-                        return <li>{ingredient.amount.us.value}</li>
-                      }))}
-                      </ul>
-                      <ul>
-                      {(this.state.ingredients.map((ingredient) => {
-                        return <li>{ingredient.amount.us.unit}</li>
-                      }))}
-                      </ul>
-                      <ul>
-                      {(this.state.ingredients.map((ingredient) => {
-                        return <li>{ingredient.name}</li>
+                        return <li>{`${ingredient.amount.us.value} ${ingredient.amount.us.unit} of ${ingredient.name}`}</li>
                       }))}
                       </ul>
                     </div>
@@ -226,11 +215,6 @@ class App extends Component {
                 }
 
                 </React.Fragment>
-
-
-
-
-
 
         </div>
 
