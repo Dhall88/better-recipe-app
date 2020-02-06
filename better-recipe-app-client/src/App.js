@@ -17,7 +17,7 @@ class App extends Component {
     searchString:'',
     searchResults:[],
     displaySearch:false,
-    activeRecipe: ['ddddddddddd dkkkkkkkkkkkkkkkkkkkk saaaaaaaaaaaaaaaaaaaa k           kkkkkkkkkkkkkkkkkk'],
+    activeRecipe: [],
     activeRecipeName: '',
     displayActive: false,
     ingredients:[],
@@ -26,6 +26,7 @@ class App extends Component {
 
   componentDidMount = () => {
     this.getRecipes();
+    console.log(this.state.savedRecipes)
   }
 
   getRecipes = () => {
