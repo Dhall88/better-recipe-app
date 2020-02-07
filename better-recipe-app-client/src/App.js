@@ -20,7 +20,10 @@ class App extends Component {
     displayActive: false,
     ingredients:[],
     savedRecipes:[],
-    intro: true
+    intro: true,
+    activeRecipeId:'',
+    editMode: false,
+    activeDbId:0
   }
 
   componentDidMount = () => {
@@ -32,7 +35,6 @@ class App extends Component {
     .then(response => response.json())
     .then(json => this.setState({savedRecipes: json}))
     .catch(error => console.error(error))
-    setTimeout(console.log(this.state.savedRecipes),5)
   }
 
   recipeSearch=(event)=>{
@@ -55,8 +57,14 @@ class App extends Component {
 
   activeRecipe = (event) => {
     event.preventDefault();
-    let name=event.target.innerHTML;
-    fetch(`https://api.spoonacular.com/recipes/${event.currentTarget.id}/analyzedInstructions?apiKey=${apiKey}`)
+    console.log(event.target.id);
+    console.log(event.currentTarget.id);
+    let id_arr=event.currentTarget.id.split(',');
+    let name=id_arr[0]
+    let api_id=id_arr[1];
+    let database=id_arr[2];
+    console.log(database);
+    fetch(`https://api.spoonacular.com/recipes/${api_id}/analyzedInstructions?apiKey=${apiKey}`)
     .then((response) => response.json())
       .then((recipeInstructions) => {
         this.setState({
@@ -64,11 +72,13 @@ class App extends Component {
           displayActive: true,
           displaySearch: false,
           intro: false,
-          activeRecipeName: name
+          activeRecipeName: name,
+          activeRecipeId: api_id,
+          activeDbId: database
         })
       })
 
-      fetch(`https://api.spoonacular.com/recipes/${event.currentTarget.id}/ingredientWidget.json?apiKey=${apiKey}`)
+      fetch(`https://api.spoonacular.com/recipes/${api_id}/ingredientWidget.json?apiKey=${apiKey}`)
       .then((response) => response.json())
         .then((recipeIngredients) => {
           this.setState({
@@ -89,15 +99,39 @@ class App extends Component {
     })
   }
 
+  editMode = (event) => {
+    event.preventDefault();
+    this.setState({
+      editMode: true
+    })
+  }
+
+    updateRecipe = (event) => {
+      event.preventDefault();
+      console.log(this.state.activeDbId);
+      fetch('http://localhost:3000/recipes/' + this.state.activeDbId, {
+        body: JSON.stringify({name: this.state.activeRecipeName}),
+        method: 'PUT',
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(updatedRecipe => updatedRecipe.json())
+        .then(recipeToDo => {
+          fetch('http://localhost:3000/recipes')
+            .then(response => response.json())
+            .then(recipes => {
+              this.setState({ savedRecipes: recipes, editMode: false})
+            })
+        })
+    }
+
+
   saveRecipe = (event) => {
     event.preventDefault()
-    console.log(this.state.activeRecipeName);
-    console.log(this.state.activeRecipe);
-    console.log(this.state.ingredients);
     fetch('http://localhost:3000/recipes', {
-      body: JSON.stringify({name: this.state.activeRecipeName,
-                            instructions: [{'1':1, 'test':'test2', 'arr':[1,2,3]}],
-                            ingredients: this.state.ingredients}),
+      body: JSON.stringify({name: this.state.activeRecipeName, api_id: parseInt(this.state.activeRecipeId)}),
       method: 'POST',
       headers: {
         'Accept': 'application/json, text/plain, */*',
@@ -108,7 +142,6 @@ class App extends Component {
       return createdRecipe.json()
     })
     .then(jsonedRecipe => {
-      console.log(jsonedRecipe)
       this.setState({
         savedRecipes: [...this.state.savedRecipes, jsonedRecipe]
       })
@@ -129,8 +162,8 @@ class App extends Component {
               <div className='saved-recipes'>
                 <h3>Saved Recipes</h3>
                 <ul>
-              {this.state.savedRecipes.map(recipe => {
-                return <li>{recipe.name}</li>
+              {this.state.savedRecipes.map((recipe,index) => {
+                return  <li id={`${recipe.name},${recipe.api_id},${recipe.id}`} onClick={this.activeRecipe}>{recipe.name}</li>
               })}
                 </ul>
               </div>
@@ -180,7 +213,7 @@ class App extends Component {
                   <div className='search-list'>
                   {this.state.displaySearch===true?
                     (this.state.searchResults.map((recipe,index)=>{
-                      return <div id={recipe.id} onClick={this.activeRecipe}>
+                      return <div id={[recipe.title,recipe.id]} onClick={this.activeRecipe}>
                               <p>{recipe.title}</p>
                               <img src={`https://spoonacular.com/recipeImages/${recipe.image}`} />
                             </div>
@@ -192,12 +225,20 @@ class App extends Component {
                 <React.Fragment>
                 {this.state.displayActive===true?
                   <React.Fragment>
+                    {this.state.editMode===true?
+                      <form onSubmit={this.updateRecipe}>
+                        <input type='text' value={this.state.activeRecipeName} onChange={this.handleChange} id={'activeRecipeName'} />
+                        <input type='submit' value='Save Recipe Title' />
+                      </form>
+                      :<h4 onClick={this.editMode}>{this.state.activeRecipeName}</h4>}
+
                     <form className='save-form' onSubmit={this.saveRecipe}>
                       <input type='hidden' value={this.state.activeRecipeName} onChange={this.handleChange} id='name' />
                       <input type='hidden' value={this.state.activeRecipe} onChange={this.handleChange} id='instructions' />
                       <input type='hidden' value={this.state.ingredients} onChange={this.handleChange} id='ingredients' />
                       <input type='submit' value='Save Recipe'/>
                     </form>
+
                   </React.Fragment>
 
                 :''}
