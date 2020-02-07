@@ -19,12 +19,12 @@ class App extends Component {
     activeRecipeName: '',
     displayActive: false,
     ingredients:[],
-    savedRecipes:[]
+    savedRecipes:[],
+    intro: true
   }
 
   componentDidMount = () => {
     this.getRecipes();
-    console.log(this.state.savedRecipes)
   }
 
   getRecipes = () => {
@@ -32,16 +32,19 @@ class App extends Component {
     .then(response => response.json())
     .then(json => this.setState({savedRecipes: json}))
     .catch(error => console.error(error))
+    setTimeout(console.log(this.state.savedRecipes),5)
   }
 
   recipeSearch=(event)=>{
     event.preventDefault();
-    fetch(`https://api.spoonacular.com/recipes/search?query=${this.state.searchString}&apiKey=${apiKey}`)
+    fetch(`https://api.spoonacular.com/recipes/search?query=${this.state.searchString}&number=20&apiKey=${apiKey}`)
     .then((response) => response.json())
       .then((recipeSearch) => {
         this.setState({
           searchResults: recipeSearch.results,
-        displaySearch: true
+          displaySearch: true,
+          displayActive: false,
+          intro: false
       })
       })
   }
@@ -53,18 +56,19 @@ class App extends Component {
   activeRecipe = (event) => {
     event.preventDefault();
     let name=event.target.innerHTML;
-    fetch(`https://api.spoonacular.com/recipes/${event.target.id}/analyzedInstructions?apiKey=${apiKey}`)
+    fetch(`https://api.spoonacular.com/recipes/${event.currentTarget.id}/analyzedInstructions?apiKey=${apiKey}`)
     .then((response) => response.json())
       .then((recipeInstructions) => {
         this.setState({
           activeRecipe: recipeInstructions[0].steps,
           displayActive: true,
           displaySearch: false,
+          intro: false,
           activeRecipeName: name
         })
       })
 
-      fetch(`https://api.spoonacular.com/recipes/${event.target.id}/ingredientWidget.json?apiKey=${apiKey}`)
+      fetch(`https://api.spoonacular.com/recipes/${event.currentTarget.id}/ingredientWidget.json?apiKey=${apiKey}`)
       .then((response) => response.json())
         .then((recipeIngredients) => {
           this.setState({
@@ -87,13 +91,17 @@ class App extends Component {
 
   saveRecipe = (event) => {
     event.preventDefault()
-    console.log(typeof this.state.activeRecipeName)
+    console.log(this.state.activeRecipeName);
+    console.log(this.state.activeRecipe);
+    console.log(this.state.ingredients);
     fetch('http://localhost:3000/recipes', {
-      body: JSON.stringify({name: this.state.activeRecipeName, instructions: this.state.activeRecipe, ingredients: this.state.ingredients}),
+      body: JSON.stringify({name: this.state.activeRecipeName,
+                            instructions: [{'1':1, 'test':'test2', 'arr':[1,2,3]}],
+                            ingredients: this.state.ingredients}),
       method: 'POST',
       headers: {
         'Accept': 'application/json, text/plain, */*',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       }
     })
     .then(createdRecipe => {
@@ -110,7 +118,7 @@ class App extends Component {
 
   render() {
     return(
-      <div classNAme='main'>
+      <div className='main'>
 
         <h1>Better Recipes</h1>
 
@@ -164,14 +172,21 @@ class App extends Component {
                   <input type='submit' value='Search'/>
                 </form>
 
+                {this.state.intro===true?
+                  <p className='intro'>"Welcome to a better recipe app! There will be no blogs, no remenisinciing about balmly summer evenings, and absolutely no needless scrolling everytime you need to check a measurement.  Search a database of 500,000 recipes by keyword (eg. Burger, Casserole, chicken taco...) and enjoy.  Favorite recipes can be saved by hitting the 'Save Recipe' button and can be revisited later."</p> :''
+                }
+
                 <React.Fragment>
-                  <ul>
+                  <div className='search-list'>
                   {this.state.displaySearch===true?
                     (this.state.searchResults.map((recipe,index)=>{
-                      return <li id={recipe.id} onClick={this.activeRecipe}>{recipe.title}</li>
+                      return <div id={recipe.id} onClick={this.activeRecipe}>
+                              <p>{recipe.title}</p>
+                              <img src={`https://spoonacular.com/recipeImages/${recipe.image}`} />
+                            </div>
                     })):''
                   }
-                  </ul>
+                  </div>
                 </React.Fragment>
 
                 <React.Fragment>
@@ -198,11 +213,11 @@ class App extends Component {
                 </React.Fragment>
                 </div>
 
-                <React.Fragment>
+                <div className='ingredient-placeholder'>
+                <h3>Ingredients</h3>
                 {this.state.displayActive===true?
+                  <React.Fragment>
 
-                  <div className='ingredient-placeholder'>
-                    <h3>Ingredients</h3>
                     <div className='ingredients'>
                       <ul>
                       {(this.state.ingredients.map((ingredient) => {
@@ -210,11 +225,11 @@ class App extends Component {
                       }))}
                       </ul>
                     </div>
-                  </div>
+                    </React.Fragment>
                   :''
                 }
+                </div>
 
-                </React.Fragment>
 
         </div>
 

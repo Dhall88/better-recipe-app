@@ -6,7 +6,9 @@ export default class Timer extends Component {
         seconds: this.props.seconds,
         minutes: this.props.minutes,
         hours: this.props.hours,
-        startBoolean: true
+        startBoolean: true,
+        show: true,
+        done: false
     }
     componentDidMount() {
         this.countDown()
@@ -27,15 +29,22 @@ export default class Timer extends Component {
             seconds: this.props.seconds,
             minutes: this.props.minutes,
             hours: this.props.hours,
-            startBoolean:false
+            startBoolean:false,
+            done: false
         })
-
     }
+
+    removeTimer = () => {
+      this.setState({
+        show: false
+      })
+    }
+
     countDown = () => {
         setTimeout(()=> {
-            if(this.state.startBoolean===false) {
-                return
-            }
+            if(this.state.startBoolean===false) return
+
+            if(this.state.seconds===0&&this.state.minutes===0&&this.state.hours===0) return
 
             if (this.state.seconds===0) {
                 this.setState({
@@ -50,8 +59,9 @@ export default class Timer extends Component {
             })
         }
         if (this.state.seconds===0&&this.state.minutes===0&&this.state.hours===0){
-            console.log("ring! timer done")
-            return
+          this.setState({
+            done:true
+          })
         }
             this.countDown()
         }, 1000)
@@ -60,17 +70,24 @@ export default class Timer extends Component {
 
     render () {
         return (
-            <div className='timer'>
-                <h4>{this.state.label}</h4>
-                <h5>{`${this.state.hours}:${this.state.minutes<10?0:''}${this.state.minutes}:${this.state.seconds<10?0:''}${this.state.seconds}`}</h5>
-                <button onClick={this.startStop} className='action'>
-                    {this.state.startBoolean===true?'Stop':'Start'}
-                </button>
-                <button onClick={this.reset} className='action'>
-                    Reset
-                </button>
+          <React.Fragment>
+            {this.state.show===true?
+              <div className='timer'>
+                  <h4>{this.state.label}{this.state.done===true?<p>DONE</p>:''}</h4>
+                  <h5>{`${this.state.hours}:${this.state.minutes<10?0:''}${this.state.minutes}:${this.state.seconds<10?0:''}${this.state.seconds}`}</h5>
+                  <button onClick={this.startStop} className='action'>
+                      {this.state.startBoolean===true?'Stop':'Start'}
+                  </button>
+                  <button onClick={this.reset} className='action'>
+                      Reset
+                  </button>
+                  <button onClick={this.removeTimer} className='action'>
+                      Remove
+                  </button>
 
-            </div>
+              </div>:''
+            }
+          </React.Fragment>
         )
     }
 }

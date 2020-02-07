@@ -78,7 +78,7 @@ ul li {
 }
 
 .ingredients {
-  display: flex;
+  /* display: flex; */
   /* position: fixed; */
   /* top: 170px;
   right: 5%; */
@@ -109,7 +109,34 @@ ul li {
 
 .recipe-container {
   width: 50%;
+  /* text-align: center; */
+}
+
+.save-form {
   text-align: center;
+}
+
+.recipe-form {
+  text-align: center;
+}
+
+.search-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.search-list>div{
+  width: 33%;
+  text-align: center;
+}
+
+
+
+.intro {
+  color: #7c795d;
+  font-family: 'Trocchi', serif;
+  font-size: 20px;
+  font-weight: normal;
 }
 
 .saved-recipes, .timer-container {
@@ -135,5 +162,10 @@ ul li {
 label {
   color: #7c795d;
   font-family: 'Trocchi', serif;
-  font-size: 15px;
+  font-size: 20px;
+}
+
+img {
+  /* width: 150px; */
+  height: 150px;
 }
