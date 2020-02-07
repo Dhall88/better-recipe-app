@@ -2,10 +2,8 @@
 
 one:
   name: MyString
-  instructions: 
-  ingredients: 
+  api_id: 
 
 two:
   name: MyString
-  instructions: 
-  ingredients: 
+  api_id: 
